@@ -1,7 +1,7 @@
-diff --git a//dev/null b/js/app.js
+diff --git a//dev/null b/js-app.js
 index 0000000000000000000000000000000000000000..4ce4da2040cdf903e315a8182dc5f80ce0d189e5 100644
 --- a//dev/null
-+++ b/js/app.js
++++ b/js-app.js
 @@ -0,0 +1,1042 @@
 +const storage = {
 +    get(key, fallback) {
