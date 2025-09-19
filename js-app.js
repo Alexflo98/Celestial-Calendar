@@ -107,6 +107,16 @@ function formatDateTimeISO(dateStr, timeStr) {
     return `${dateStr}T00:00:00`;
 }
 
+function toLocalDateInputValue(value) {
+    if (!value) return '';
+    const date = value instanceof Date ? new Date(value.getTime()) : new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return '';
+    }
+    const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return offsetDate.toISOString().slice(0, 10);
+}
+
 function clampTimeOrder(startTime, endTime) {
     if (startTime && endTime && startTime > endTime) {
         return [startTime, startTime];
@@ -192,16 +202,37 @@ function setView(view) {
 function adjustPeriod(direction) {
     const multiplier = direction === 'next' ? 1 : -1;
     const { currentView } = state;
-    const date = new Date(state.currentDate);
+    const baseDate = new Date(state.currentDate);
+    let nextDate = new Date(baseDate);
+
     if (currentView === 'day') {
-        date.setDate(date.getDate() + multiplier);
+                nextDate.setDate(baseDate.getDate() + multiplier);
     } else if (currentView === 'week') {
-        date.setDate(date.getDate() + multiplier * 7);
+                nextDate.setDate(baseDate.getDate() + multiplier * 7);
     } else {
-        date.setMonth(date.getMonth() + multiplier);
+        const currentYear = baseDate.getFullYear();
+        const currentMonth = baseDate.getMonth();
+        const currentDay = baseDate.getDate();
+
+        const targetMonthIndex = currentMonth + multiplier;
+        const targetYear = currentYear + Math.floor(targetMonthIndex / 12);
+        const targetMonth = ((targetMonthIndex % 12) + 12) % 12;
+        const daysInTargetMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+        const targetDay = Math.min(currentDay, daysInTargetMonth);
+
+        nextDate = new Date(
+            targetYear,
+            targetMonth,
+            targetDay,
+            baseDate.getHours(),
+            baseDate.getMinutes(),
+            baseDate.getSeconds(),
+            baseDate.getMilliseconds()
+        );
     }
-    state.currentDate = date;
-    state.selectedDate = date;
+    
+    state.currentDate = nextDate;
+    state.selectedDate = nextDate;
     renderCalendar();
 }
 
@@ -675,9 +706,33 @@ function computeNextOccurrence(date, frequency) {
         case 'weekly':
             next.setDate(next.getDate() + 7);
             break;
-        case 'monthly':
-            next.setMonth(next.getMonth() + 1);
+        case 'monthly': {
+            const originalDay = next.getDate();
+            const hours = next.getHours();
+            const minutes = next.getMinutes();
+            const seconds = next.getSeconds();
+            const milliseconds = next.getMilliseconds();
+
+            const currentMonthIndex = next.getMonth();
+            const currentYear = next.getFullYear();
+            const targetMonthIndex = currentMonthIndex + 1;
+            const normalizedYear = currentYear + Math.floor(targetMonthIndex / 12);
+            const normalizedMonth = targetMonthIndex % 12;
+            const maxDayInTargetMonth = new Date(normalizedYear, normalizedMonth + 1, 0).getDate();
+            const clampedDay = Math.min(originalDay, maxDayInTargetMonth);
+
+            const adjusted = new Date(
+                normalizedYear,
+                normalizedMonth,
+                clampedDay,
+                hours,
+                minutes,
+                seconds,
+                milliseconds
+            );
+            next.setTime(adjusted.getTime());
             break;
+		}
         case 'yearly':
             next.setFullYear(next.getFullYear() + 1);
             break;
@@ -951,7 +1006,7 @@ function renderWeather(data, displayName) {
         <div class="current-weather-main">
             <span class="weather-emoji" aria-hidden="true">${emoji}</span>
             <div>
-                <strong>${current.temperature.toFixed(0)}°${data.current_weather_units.temperature}</strong>
+                <strong>${current.temperature.toFixed(0)}${data.current_weather_units.temperature}</strong>
                 <p>${description}</p>
             </div>
         </div>
