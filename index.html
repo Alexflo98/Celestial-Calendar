@@ -1,206 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Celestial Calendar</title>
+    <link rel="stylesheet" href="css-style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="app-header">
+        <div class="brand">
+            <h1>Celestial Calendar</h1>
+            <p>Plan the day, week, and beyond with clarity.</p>
+        </div>
+        <div class="header-widgets">
+            <div class="clock" id="clock"></div>
+            <div class="theme-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle" />
+                    <span class="slider"></span>
+                </label>
+                <span id="themeLabel">Light Mode</span>
+            </div>
+            <div class="weather-widget">
+                <div class="weather-header">
+                    <input type="text" id="locationInput" placeholder="Enter city or coordinates" />
+                    <button id="fetchWeather">Update</button>
+                </div>
+                <div class="weather-content" id="weatherContent">
+                    <p class="weather-status">Fetching weather...</p>
+                </div>
+            </div>
+        </div>
+    </header>
 
-+<!DOCTYPE html>
-+<html lang="en">
-+<head>
-+    <meta charset="UTF-8" />
-+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-+    <title>Celestial Calendar</title>
-+    <link rel="stylesheet" href="css-style.css" />
-+    <link rel="preconnect" href="https://fonts.googleapis.com">
-+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-+</head>
-+<body>
-+    <header class="app-header">
-+        <div class="brand">
-+            <h1>Celestial Calendar</h1>
-+            <p>Plan the day, week, and beyond with clarity.</p>
-+        </div>
-+        <div class="header-widgets">
-+            <div class="clock" id="clock"></div>
-+            <div class="theme-toggle">
-+                <label class="switch">
-+                    <input type="checkbox" id="themeToggle" />
-+                    <span class="slider"></span>
-+                </label>
-+                <span id="themeLabel">Light Mode</span>
-+            </div>
-+            <div class="weather-widget">
-+                <div class="weather-header">
-+                    <input type="text" id="locationInput" placeholder="Enter city or coordinates" />
-+                    <button id="fetchWeather">Update</button>
-+                </div>
-+                <div class="weather-content" id="weatherContent">
-+                    <p class="weather-status">Fetching weather...</p>
-+                </div>
-+            </div>
-+        </div>
-+    </header>
-+
-+    <main class="layout">
-+        <section class="calendar-panel">
-+            <div class="calendar-controls">
-+                <div class="calendar-navigation">
-+                    <button id="prevPeriod" aria-label="Previous period">&#x276E;</button>
-+                    <h2 id="currentPeriodLabel"></h2>
-+                    <button id="nextPeriod" aria-label="Next period">&#x276F;</button>
-+                </div>
-+                <div class="calendar-view-options">
-+                    <button data-view="month" class="view-toggle active">Month</button>
-+                    <button data-view="week" class="view-toggle">Week</button>
-+                    <button data-view="day" class="view-toggle">Day</button>
-+                    <button id="todayBtn">Today</button>
-+                </div>
-+                <button id="addEventBtn" class="primary">+ Add Event</button>
-+            </div>
-+            <div id="calendarContainer" class="calendar-container"></div>
-+            <div class="event-feed" id="eventFeed"></div>
-+        </section>
-+
-+        <aside class="sidebar">
-+            <section class="widget todo-widget">
-+                <header>
-+                    <h3>To-Do Scheduler</h3>
-+                    <button id="addTaskBtn" class="primary">+ Task</button>
-+                </header>
-+                <ul id="taskList" class="task-list"></ul>
-+            </section>
-+            <section class="widget gallery-widget">
-+                <header>
-+                    <h3>Photo Album</h3>
-+                    <div class="gallery-actions">
-+                        <label class="upload-button">
-+                            <input type="file" id="photoUpload" accept="image/*" multiple />
-+                            Upload
-+                        </label>
-+                        <button id="addPhotoUrlBtn">Add by URL</button>
-+                    </div>
-+                </header>
-+                <div id="photoGallery" class="photo-gallery"></div>
-+            </section>
-+        </aside>
-+    </main>
-+
-+    <dialog id="eventDialog">
-+        <form method="dialog" id="eventForm">
-+            <h3 id="eventDialogTitle">Add Event</h3>
-+            <label>
-+                Title
-+                <input type="text" id="eventTitle" required />
-+            </label>
-+            <label>
-+                Description
-+                <textarea id="eventDescription" rows="3"></textarea>
-+            </label>
-+            <div class="inline-inputs">
-+                <label>
-+                    Date
-+                    <input type="date" id="eventDate" required />
-+                </label>
-+                <label>
-+                    Start Time
-+                    <input type="time" id="eventStartTime" required />
-+                </label>
-+                <label>
-+                    End Time
-+                    <input type="time" id="eventEndTime" required />
-+                </label>
-+            </div>
-+            <label>
-+                Color
-+                <input type="color" id="eventColor" value="#6b5cff" />
-+            </label>
-+            <div class="dialog-actions">
-+                <button value="cancel" type="button" id="cancelEventBtn">Cancel</button>
-+                <button value="default" type="submit" class="primary">Save</button>
-+            </div>
-+        </form>
-+    </dialog>
-+
-+    <dialog id="taskDialog">
-+        <form method="dialog" id="taskForm">
-+            <h3 id="taskDialogTitle">Add Task</h3>
-+            <label>
-+                Task Name
-+                <input type="text" id="taskTitle" required />
-+            </label>
-+            <label>
-+                Notes
-+                <textarea id="taskNotes" rows="3"></textarea>
-+            </label>
-+            <div class="inline-inputs">
-+                <label>
-+                    Start Date
-+                    <input type="date" id="taskStartDate" required />
-+                </label>
-+                <label>
-+                    Time
-+                    <input type="time" id="taskTime" />
-+                </label>
-+            </div>
-+            <label>
-+                Frequency
-+                <select id="taskFrequency">
-+                    <option value="once">Once</option>
-+                    <option value="daily">Daily</option>
-+                    <option value="every-other-day">Every Other Day</option>
-+                    <option value="weekly">Weekly</option>
-+                    <option value="monthly">Monthly</option>
-+                    <option value="yearly">Yearly</option>
-+                </select>
-+            </label>
-+            <div class="dialog-actions">
-+                <button value="cancel" type="button" id="cancelTaskBtn">Cancel</button>
-+                <button value="default" type="submit" class="primary">Save</button>
-+            </div>
-+        </form>
-+    </dialog>
-+
-+    <dialog id="photoUrlDialog">
-+        <form method="dialog" id="photoUrlForm">
-+            <h3>Add Photo by URL</h3>
-+            <label>
-+                Image URL
-+                <input type="url" id="photoUrlInput" placeholder="https://example.com/image.jpg" required />
-+            </label>
-+            <div class="dialog-actions">
-+                <button value="cancel" type="button" id="cancelPhotoUrlBtn">Cancel</button>
-+                <button value="default" type="submit" class="primary">Add</button>
-+            </div>
-+        </form>
-+    </dialog>
-+
-+    <template id="taskTemplate">
-+        <li class="task-item">
-+            <label>
-+                <input type="checkbox" class="task-complete" />
-+                <div class="task-details">
-+                    <span class="task-title"></span>
-+                    <span class="task-meta"></span>
-+                </div>
-+            </label>
-+            <div class="task-actions">
-+                <button class="task-edit">Edit</button>
-+                <button class="task-delete">Delete</button>
-+            </div>
-+        </li>
-+    </template>
-+
-+    <template id="eventFeedTemplate">
-+        <div class="event-feed-item">
-+            <div class="event-color"></div>
-+            <div class="event-info">
-+                <h4></h4>
-+                <p class="event-time"></p>
-+                <p class="event-description"></p>
-+            </div>
-+            <div class="event-actions">
-+                <button class="event-edit">Edit</button>
-+                <button class="event-delete">Delete</button>
-+            </div>
-+        </div>
-+    </template>
-+
-+    <script src="js-app.js" type="module"></script>
-+</body>
-+</html>
+    <main class="layout">
+        <section class="calendar-panel">
+            <div class="calendar-controls">
+                <div class="calendar-navigation">
+                    <button id="prevPeriod" aria-label="Previous period">&#x276E;</button>
+                    <h2 id="currentPeriodLabel"></h2>
+                    <button id="nextPeriod" aria-label="Next period">&#x276F;</button>
+                </div>
+                <div class="calendar-view-options">
+                    <button data-view="month" class="view-toggle active">Month</button>
+                    <button data-view="week" class="view-toggle">Week</button>
+                    <button data-view="day" class="view-toggle">Day</button>
+                    <button id="todayBtn">Today</button>
+                </div>
+                <button id="addEventBtn" class="primary">+ Add Event</button>
+            </div>
+            <div id="calendarContainer" class="calendar-container"></div>
+            <div class="event-feed" id="eventFeed"></div>
+        </section>
+
+        <aside class="sidebar">
+            <section class="widget todo-widget">
+                <header>
+                    <h3>To-Do Scheduler</h3>
+                    <button id="addTaskBtn" class="primary">+ Task</button>
+                </header>
+                <ul id="taskList" class="task-list"></ul>
+            </section>
+            <section class="widget gallery-widget">
+                <header>
+                    <h3>Photo Album</h3>
+                    <div class="gallery-actions">
+                        <label class="upload-button">
+                            <input type="file" id="photoUpload" accept="image/*" multiple />
+                            Upload
+                        </label>
+                        <button id="addPhotoUrlBtn">Add by URL</button>
+                    </div>
+                </header>
+                <div id="photoGallery" class="photo-gallery"></div>
+            </section>
+        </aside>
+    </main>
+
+    <dialog id="eventDialog">
+        <form method="dialog" id="eventForm">
+            <h3 id="eventDialogTitle">Add Event</h3>
+            <label>
+                Title
+                <input type="text" id="eventTitle" required />
+            </label>
+            <label>
+                Description
+                <textarea id="eventDescription" rows="3"></textarea>
+            </label>
+            <div class="inline-inputs">
+                <label>
+                    Date
+                    <input type="date" id="eventDate" required />
+                </label>
+                <label>
+                    Start Time
+                    <input type="time" id="eventStartTime" required />
+                </label>
+                <label>
+                    End Time
+                    <input type="time" id="eventEndTime" required />
+                </label>
+            </div>
+            <label>
+                Color
+                <input type="color" id="eventColor" value="#6b5cff" />
+            </label>
+            <div class="dialog-actions">
+                <button value="cancel" type="button" id="cancelEventBtn">Cancel</button>
+                <button value="default" type="submit" class="primary">Save</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="taskDialog">
+        <form method="dialog" id="taskForm">
+            <h3 id="taskDialogTitle">Add Task</h3>
+            <label>
+                Task Name
+                <input type="text" id="taskTitle" required />
+            </label>
+            <label>
+                Notes
+                <textarea id="taskNotes" rows="3"></textarea>
+            </label>
+            <div class="inline-inputs">
+                <label>
+                    Start Date
+                    <input type="date" id="taskStartDate" required />
+                </label>
+                <label>
+                    Time
+                    <input type="time" id="taskTime" />
+                </label>
+            </div>
+            <label>
+                Frequency
+                <select id="taskFrequency">
+                    <option value="once">Once</option>
+                    <option value="daily">Daily</option>
+                    <option value="every-other-day">Every Other Day</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </label>
+            <div class="dialog-actions">
+                <button value="cancel" type="button" id="cancelTaskBtn">Cancel</button>
+                <button value="default" type="submit" class="primary">Save</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="photoUrlDialog">
+        <form method="dialog" id="photoUrlForm">
+            <h3>Add Photo by URL</h3>
+            <label>
+                Image URL
+                <input type="url" id="photoUrlInput" placeholder="https://example.com/image.jpg" required />
+            </label>
+            <div class="dialog-actions">
+                <button value="cancel" type="button" id="cancelPhotoUrlBtn">Cancel</button>
+                <button value="default" type="submit" class="primary">Add</button>
+            </div>
+        </form>
+    </dialog>
+
+    <template id="taskTemplate">
+        <li class="task-item">
+            <label>
+                <input type="checkbox" class="task-complete" />
+                <div class="task-details">
+                    <span class="task-title"></span>
+                    <span class="task-meta"></span>
+                </div>
+            </label>
+            <div class="task-actions">
+                <button class="task-edit">Edit</button>
+                <button class="task-delete">Delete</button>
+            </div>
+        </li>
+    </template>
+
+    <template id="eventFeedTemplate">
+        <div class="event-feed-item">
+            <div class="event-color"></div>
+            <div class="event-info">
+                <h4></h4>
+                <p class="event-time"></p>
+                <p class="event-description"></p>
+            </div>
+            <div class="event-actions">
+                <button class="event-edit">Edit</button>
+                <button class="event-delete">Delete</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- If js-app.js is NOT using ES module imports/exports, use defer instead of type="module" -->
+    <script src="js-app.js" defer></script>
+</body>
+</html>
